@@ -1,0 +1,56 @@
+{
+  "tableName": "users",
+  "nodes": [
+    {
+      "key": "A",
+      "type": "INPUT",
+      "opeartions": {
+        "action": [{"select":["id", "name", "age"]}]
+      }
+    },
+    {
+      "key": "B",
+      "type": "FILTER",
+      "operations": {
+        "action": [{"and": [{"<": {"column":"age", "value":"18"} },
+                            {"=<": {"column":"age", "value":"20"}}]
+                   }
+                  ]
+      }
+      },
+      {
+      "key": "C",
+      "type": "SORT",
+      "operations": [{"age": "asc"}, {"name": "asc"}]
+    },
+    {
+      "key": "D",
+      "type": "TEXT_TRANSFORMATION",
+      "operations": [{"name":"UPPER"}]
+    },
+    {
+      "key": "E",
+      "type": "OUTPUT",
+      "operations": [{"limit": 100, "offset": 0}]
+    }
+  ],
+  "edges": [
+    {
+      "from": "A",
+      "to": "B"
+    },
+    {
+      "from": "B",
+      "to": "C"
+    },
+    {
+      "from": "C",
+      "to": "D"
+    },
+    {
+      "from": "D",
+      "to": "E"
+    }
+  ]
+}
+

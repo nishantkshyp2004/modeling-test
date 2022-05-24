@@ -1,0 +1,1 @@
+WITH E AS (WITH D AS (WITH C AS (WITH B AS (WITH A AS (SELECT "id","name","age" FROM "users") SELECT "A"."id","A"."name","A"."age" FROM A WHERE "A"."age">'18') SELECT "B"."id","B"."name","B"."age" FROM B ORDER BY "B"."age",'ASC',"B"."name",'ASC') SELECT "C"."id",UPPER("C"."name") "name","C"."age" FROM C) SELECT * FROM D) SELECT * FROM E LIMIT 100

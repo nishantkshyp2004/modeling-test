@@ -20,6 +20,25 @@ Graphical representation of actual use-case:
 Use your imagination to fill in the missing information however you like to achieve the result.
 
 # Bonus Points
- - Optimize `request-data.json` json structure/schema.
- - Extendable structure which allows to add more types easily in the future.
- - Suggestion on how to validate the columns used inside the nodes.
+ - Optimize `request-data.json` json structure/schema: a sample request-data-v1.json is added and the json is optimized.
+ - Extendable structure which allows to add more types easily in the future. Factory design pattern is used to support the extendable sturucture. 
+ - Suggestion on how to validate the columns used inside the nodes.We can validate the current node columns with the first node columns in input parameter by including _validate_column methods in every Node class. 
+
+
+## RUN
+`pip install -r requirements.txt`
+
+`cd parse`
+
+`python main.py`
+
+## Explaination
+
+The query generated in file `result_withclause.sql`
+Pypika query builder is used to generate the query dynamically.
+The with clause with comman seperated is not supported using pypika,
+otherwise we can also create temp view to get the same result
+I have reached to the contributor as well to support this feature. 
+
+## Note
+To Generate sub-queries without using **with clause** in also added `nodes_sub_query.py`

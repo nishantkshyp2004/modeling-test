@@ -17,7 +17,7 @@
             "type": "FILTER",
             "transformObject": {
                 "variable_field_name": "age",
-                "joinOperator": "AND",
+                "joinOperator": "OR",
                 "operations": [
                     {
                         "operator": ">",
