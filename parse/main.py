@@ -1,4 +1,4 @@
-from nodes import GraphStructure, QueryFactory
+from nodes import GraphStructure, QueryFactory, Query, AliasedQuery
 from edge import Edge
 import json
 
@@ -23,12 +23,12 @@ def run():
                 query = qf.get_query(node, graph_order, query=query)
                 node_query[node_name] = query
                 break
-    #generate finaly sub query.
-    # for node_name, query in node_query.items():
-    #     final_query = (Query
-    #                    .with_(query, node_name)
-    #                    .AliasedQuery(node_name)
-    #                    )
+    # generate finaly sub query.
+    final_query= Query
+    node_name = None
+    for node_name, query in node_query.items():
+        final_query= final_query.with_(query, node_name)
+    query = final_query.from_(AliasedQuery(node_name)).select(query.star)
     print(query)
     with open('result_withclause.sql', 'w') as file:
         file.write(query.get_sql())

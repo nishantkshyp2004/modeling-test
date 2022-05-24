@@ -1,6 +1,6 @@
 from abc import abstractmethod
-from pypika.terms import BasicCriterion, ComplexCriterion, ValueWrapper, Star
-from pypika import Query, Table, AliasedQuery
+from pypika.terms import BasicCriterion, ComplexCriterion, ValueWrapper
+from pypika import Query, Table
 from config import nested_conditon_mapping, equality_mapping, \
     order_mapping, func_mapping
 
@@ -74,8 +74,7 @@ class FilterNode(Nodes):
         if len(where_condition)>1:
             where_condition = [ComplexCriterion(nested_conditon_mapping[joinoperator.lower()], *where_condition)]
         #Generating the with clause for sub query.
-        query = Query.with_(query, self.predecessor_node_name).from_(AliasedQuery(self.predecessor_node_name)). \
-            select(*column_list).where(*where_condition)
+        query = Query.from_(query).select(*column_list).where(*where_condition)
         return query
 
 class SortNode(Nodes):
@@ -104,9 +103,7 @@ class SortNode(Nodes):
         #Zipping all target(columns) and order together.
         column_order = list(zip(order_column, order_direction))
         #Generate query using with clause.
-        query = Query.with_(query, self.predecessor_node_name) \
-            .from_(AliasedQuery(self.predecessor_node_name)) \
-            .select(*column_list)
+        query = Query.from_(query).select(*column_list)
         # generate orderby clause using column_order.
         for column, order in column_order:
             query = query.orderby(column, order_mapping[order.lower()])
@@ -133,8 +130,7 @@ class TextTransformationNode(Nodes):
         """
         query = self.query
         column_list = list(map(lambda x: x.name, self.query._selects))
-        query = Query.with_(query, self.predecessor_node_name).from_(AliasedQuery(self.predecessor_node_name)) \
-            .select(*column_list)
+        query = Query.from_(query).select(*column_list)
         new_column_list = query._selects
         for val in self.transform_json:
             column, transformation = val["column"], val["transformation"].lower()
@@ -162,12 +158,11 @@ class OutputNode(Nodes):
         """
         query = self.query
         #Generate query using with clause for predecessor node.
-        query = Query.with_(query, self.predecessor_node_name).from_(AliasedQuery(self.predecessor_node_name)) \
-            .select(Star().get_sql())
         limit, offset = self.transform_json['limit'], self.transform_json['offset']
         #Generate query using with clause for current node.
-        query = Query.with_(query, self.name).from_(AliasedQuery(self.name)).select(Star().get_sql())[offset:limit]
+        query = Query.from_(query).select('*')[offset:limit]
         return query
+
 
 class QueryFactory:
     """
@@ -200,28 +195,3 @@ class QueryFactory:
 
 
 
-# if __name__=='__main__':
-#     users = Table("users")
-#     table = Query.from_(users)
-#     # column_list = [table.id, table.age, table.name]
-#     column_list = [table.__getattr__('id'), table.__getattr__('age'), table.__getattr__('name')]
-#     # asdf = table.select(*column_list)
-#     where_condition = [BasicCriterion(equality_mapping[">"], table.field('age'), ValueWrapper(18))]
-#     # table.field('age').table.alias = "users"
-#     # asdf = table.select(*column_list).where(*where_condition)
-#     asdf = table.select(*column_list)
-#     asdf.immutable = False
-#     asdf1 = asdf.where(*[table.__getattr__('age') >=18])
-#     print("hello")
-#     customers = Table('customers')
-#     q = Query.from_(customers).select(
-#         customers.id,
-#         customers.fname
-#     ).where(
-#         Criterion.all([
-#             customers.is_registered,
-#             customers.age >= 18,
-#             customers.lname == "Jones",
-#             ])
-# )
-#     print("hello")

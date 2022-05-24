@@ -36,9 +36,18 @@ Use your imagination to fill in the missing information however you like to achi
 
 The query generated in file `result_withclause.sql`
 Pypika query builder is used to generate the query dynamically.
-The with clause with comman seperated is not supported using pypika,
-otherwise we can also create temp view to get the same result
-I have reached to the contributor as well to support this feature. 
+The with clause with comman seperated is supported using pypika but not with the alias name,
+Result will consist of the complete query instead of Alias names. 
+
+Example:
+`WITH A AS (SELECT "id","name","age" FROM "users") ,
+B AS (SELECT "A"."id","A"."name","A"."age" FROM (SELECT "id","name","age" FROM "users") "A" WHERE "A"."age">'18') ,
+C AS (SELECT "sq0"."id","sq0"."name","sq0"."age" FROM (SELECT "A"."id","A"."name","A"."age" FROM (SELECT "id","name","age" FROM "users") "A" WHERE "A"."age">'18') "sq0" ORDER BY "sq0"."age",'ASC',"sq0"."name",'ASC') ,
+D AS (SELECT "sq1"."id",UPPER("sq1"."name") "name","sq1"."age" FROM (SELECT "sq0"."id","sq0"."name","sq0"."age" FROM (SELECT "A"."id","A"."name","A"."age" FROM (SELECT "id","name","age" FROM "users") "A" WHERE "A"."age">'18') "sq0" ORDER BY "sq0"."age",'ASC',"sq0"."name",'ASC') "sq1") ,
+E AS (SELECT * FROM (SELECT "sq1"."id",UPPER("sq1"."name") "name","sq1"."age" FROM (SELECT "sq0"."id","sq0"."name","sq0"."age" FROM (SELECT "A"."id","A"."name","A"."age" FROM (SELECT "id","name","age" FROM "users") "A" WHERE "A"."age">'18') "sq0" ORDER BY "sq0"."age",'ASC',"sq0"."name",'ASC') "sq1") "sq2" LIMIT 100)
+SELECT * FROM E`
 
 ## Note
-To Generate sub-queries without using **with clause** in also added `nodes_sub_query.py`
+Where clause in the filter type can take multiple conditions.
+Sorting can be made on multiple columns
+
