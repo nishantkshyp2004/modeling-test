@@ -40,13 +40,13 @@ The with clause with comman seperated is supported using pypika but not with the
 Result will consist of the complete query instead of Alias names. 
 
 Example:
-`WITH A AS (SELECT "id","name","age" FROM "users") ,
+```WITH A AS (SELECT "id","name","age" FROM "users") ,
 B AS (SELECT "A"."id","A"."name","A"."age" FROM (SELECT "id","name","age" FROM "users") "A" WHERE "A"."age">'18') ,
 C AS (SELECT "sq0"."id","sq0"."name","sq0"."age" FROM (SELECT "A"."id","A"."name","A"."age" FROM (SELECT "id","name","age" FROM "users") "A" WHERE "A"."age">'18') "sq0" ORDER BY "sq0"."age",'ASC',"sq0"."name",'ASC') ,
 D AS (SELECT "sq1"."id",UPPER("sq1"."name") "name","sq1"."age" FROM (SELECT "sq0"."id","sq0"."name","sq0"."age" FROM (SELECT "A"."id","A"."name","A"."age" FROM (SELECT "id","name","age" FROM "users") "A" WHERE "A"."age">'18') "sq0" ORDER BY "sq0"."age",'ASC',"sq0"."name",'ASC') "sq1") ,
 E AS (SELECT * FROM (SELECT "sq1"."id",UPPER("sq1"."name") "name","sq1"."age" FROM (SELECT "sq0"."id","sq0"."name","sq0"."age" FROM (SELECT "A"."id","A"."name","A"."age" FROM (SELECT "id","name","age" FROM "users") "A" WHERE "A"."age">'18') "sq0" ORDER BY "sq0"."age",'ASC',"sq0"."name",'ASC') "sq1") "sq2" LIMIT 100)
-SELECT * FROM E`
-
+SELECT * FROM E
+```
 ## Note
 Where clause in the filter type can take multiple conditions.
 Sorting can be made on multiple columns
