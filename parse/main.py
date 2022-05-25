@@ -29,9 +29,7 @@ def run():
     node_name = None
     for node_name, query in node_query.items():
         final_query= final_query.with_(query, node_name)
-        # if node_name == 'B':
-        #     break
-    query = final_query.from_(AliasedQuery(node_name)).select(query.star)
+    query = final_query.from_(AliasedQuery(node_name)).select("*")
     print(query)
     with open('result_withclause.sql', 'w') as file:
         file.write(query.get_sql())
